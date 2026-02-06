@@ -1,57 +1,181 @@
-![version](https://img.shields.io/badge/version-v1.0.0-yellow.svg) ![author](https://img.shields.io/badge/author-lmcf-blue.svg)
+![version](https://img.shields.io/badge/version-v2.0.0-yellow.svg) ![python](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey.svg) ![author](https://img.shields.io/badge/author-caldeix-blue.svg)
 
+# changelogger
 
-# CHANGELOG GENERATOR
-This Python script retrieves and presents Git commit information since a specified date. It analyzes a repository's commit history, identifying modified, new, and deleted files in each commit. The output includes commit details such as date, author, and a concise description commit. Developers can use this tool to track changes efficiently.
+Herramienta CLI para generar:
 
-# Git Commit Analyzer: Quick Guide
+- Un archivo `.diff` con todos los cambios entre un commit seleccionado y `HEAD`.
+- Un archivo `.md` (Markdown) con un resumen estructurado en español.
 
-The Git Commit Analyzer is a command-line tool for quickly obtaining insights into a Git repository's commit history. Follow these steps to use the tool:
+Autor: `caldeix`
 
-## Install Dependencies:
+Última actualización: `2026-02-06`
 
-Ensure you have Python installed on your system.
-The script uses Git commands, so make sure Git is installed and accessible from the command line.
+## Requisitos
 
-The provided Python script relies on the following standard libraries and tools, which are typically included with a standard Python installation:
+- Python `3.9+`
+- Git instalado y accesible en el `PATH`
+- Acceso a un repositorio Git con commits
 
-- **sys**: Standard library module providing access to some variables used or maintained by the Python interpreter and functions that interact strongly with the interpreter.
+## Instalación (modo editable)
 
-- **os**: Standard library module providing a way of interacting with the operating system, including changing the current working directory.
+Desde la raíz del proyecto (carpeta que contiene `pyproject.toml`):
 
-- **datetime**: Standard library module for working with dates and times.
+```bash
+python -m pip install -e .
+```
 
-No external dependencies beyond these standard libraries are required for the script to function. However, it assumes that Git is installed on your system and accessible from the command line, as it leverages Git commands to gather commit information.
+Notas (Windows / Python de Microsoft Store):
 
-Ensure that Python and Git are installed on your system before using the script. If they are not installed, you can download and install them from the official websites:
+- `pip` puede instalar en modo usuario y mostrar un aviso de que el directorio `Scripts` no está en `PATH`.
+- Si luego **no existe** el comando `changelogger`, revisa la sección **Troubleshooting**.
 
-Python: [Python Downloads](http://www.limni.net](https://www.python.org/downloads/)https://www.python.org/downloads/)
+## Verificación de instalación
 
-Git: [Git Downloads](http://www.limni.net](https://www.python.org/downloads/)https://www.python.org/downloads/](https://git-scm.com/downloads)https://git-scm.com/downloads)
+Comprueba que el paquete está instalado:
 
-## Clone or Navigate to Repository:
-Clone a Git repository or navigate to an existing one using the command line.
+```bash
+python -m pip show changelogger
+```
 
-## Usage:
-- Open the command line in the repository's directory.
-- Execute the script using the following command:
+Comprueba si el comando está disponible:
 
-> python3 gitmodified.py <repository_path> <start_date>
+Windows (PowerShell):
 
-Replace <repository_path> with the path to your Git repository and <start_date> with the desired start date in the format 'yyyy-mm-dd.'
+```bash
+where changelogger
+```
 
-# Review Output:
+Linux/macOS:
 
-- The tool will display a summary of commits since the specified date.
-- Information includes commit date, author, and a concise title.
-- Modified, new, and deleted files are categorized for each commit.
+```bash
+which changelogger
+```
 
-# Interpret Results:
+Si no aparece, igualmente puedes ejecutar:
 
-- Modified files are listed under "Modified."
-- New files are listed under "New."
-- Deleted files are listed under "Deleted."
-- Additional commit information is displayed under "Info."
+```bash
+python -m changelogger
+```
 
-This tool streamlines the process of understanding changes in a Git repository, making it a valuable asset for developers tracking project evolution.
+## Uso (flujo normal)
+
+Ejecuta el comando dentro de un repositorio Git (o una subcarpeta del mismo):
+
+```bash
+changelogger
+```
+
+Controles (modo interactivo moderno):
+
+- **↑ / ↓**: mover selección
+- **← / →**: cambiar de página
+- **Enter / Espacio**: seleccionar commit
+- **q / Esc**: salir
+
+La herramienta:
+
+- Lista los últimos commits de forma paginada.
+- Permite seleccionar un commit de origen por índice.
+- Pide confirmación.
+- Genera los archivos en la raíz del repo (si no existe, lo crea):
+  - `.changelogger/.diff/`
+  - `.changelogger/.md/`
+
+## Salida esperada
+
+Al confirmar la generación se crean dos archivos en la raíz del repositorio:
+
+- Diff (texto plano, UTF-8):
+  - Carpeta: `.changelogger/.diff/`
+  - Nombre: `YYYYMMDD-HHMM_HASHORIGEN-HASHDESTINO.diff`
+
+- Markdown (UTF-8):
+  - Carpeta: `.changelogger/.md/`
+  - Nombre: `YYYYMMDD-HHMM_slug-del-ultimo-commit.md`
+
+## Test en un repo de ejemplo (opcional)
+
+Si quieres comprobarlo rápido en una carpeta vacía:
+
+```bash
+mkdir repo-prueba
+cd repo-prueba
+git init
+echo hola > demo.txt
+git add .
+git commit -m "feat: commit inicial"
+echo mundo >> demo.txt
+git add .
+git commit -m "fix: ajustar demo"
+changelogger
+```
+
+Al seleccionar el primer commit como origen, el diff debería contener cambios y se generarán los dos archivos.
+
+## Smoke test (probar que funciona en 2 minutos)
+
+1. Abre una terminal dentro de un repositorio Git que tenga commits.
+2. Ejecuta:
+
+   ```bash
+   changelogger
+   ```
+
+3. En la pantalla de commits:
+
+   - Usa `x` para elegir por índice.
+   - Elige un commit que NO sea `HEAD` (para que el diff tenga contenido).
+   - Confirma con `s`.
+
+4. Verifica que se han generado archivos:
+
+   - Debe existir la carpeta `.changelogger/`.
+   - Debe existir al menos un archivo en:
+     - `.changelogger/.diff/`
+     - `.changelogger/.md/`
+
+5. Comprueba rápidamente el contenido:
+
+   - El `.diff` debe contener un diff unificado de Git.
+   - El `.md` debe contener las secciones:
+     - `## Archivos afectados`
+     - `## Commits`
+
+## Casos de prueba recomendados
+
+- Ejecutar en una carpeta que **no** es repo Git.
+  - Esperado: mensaje de error indicando que no se encontró repositorio.
+
+- Ejecutar en un repo sin commits.
+  - Esperado: `No hay commits en este repositorio.`
+
+## Troubleshooting
+
+### El comando `changelogger` no se encuentra
+
+Si `python -m pip install -e .` mostró un aviso del estilo “Scripts is not on PATH”, añade al `PATH` el directorio de scripts de tu instalación de usuario.
+
+En tu caso suele ser algo como:
+
+```text
+C:\Users\<tu_usuario>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.xx_*\LocalCache\local-packages\Python3xx\Scripts
+```
+
+Para obtener la ruta exacta de forma automática:
+
+```bash
+python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
+```
+
+Alternativa inmediata (sin tocar PATH):
+
+```bash
+python -m changelogger
+```
+
+### Git no está disponible
+
+- Verifica que `git --version` funciona.
+- Si no, instala Git y asegúrate de que esté en el `PATH`.
 

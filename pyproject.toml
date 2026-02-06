@@ -1,0 +1,22 @@
+[project]
+name = "changelogger"
+version = "2.0.0"
+description = "Herramienta CLI para generar diffs y resúmenes de commits en Markdown"
+authors = [
+  { name = "caldeix" }
+]
+requires-python = ">=3.9"
+dependencies = [
+  "GitPython>=3.1.0",
+  "prompt_toolkit>=3.0.0"
+]
+
+[project.scripts]
+changelogger = "changelogger.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
