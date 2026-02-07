@@ -68,8 +68,7 @@ def analyze_changes_with_gpt(
         client = openai.OpenAI(api_key=api_key)
         
         # Preparar el prompt para el análisis
-        prompt = f"""
-Analiza los siguientes cambios de Git y proporciona un resumen ejecutivo:
+        prompt = f"""Analiza los siguientes cambios de Git y proporciona un resumen ejecutivo:
 
 COMMITS INVOLUCRADOS:
 {commits_summary}
