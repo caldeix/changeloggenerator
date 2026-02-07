@@ -55,13 +55,33 @@ def main() -> None:
 
     # Generar contenido
     diff_texto = generate_diff(repo, commit_origen, commit_destino)
-    archivos_por_estado = classify_files_by_status(repo, commit_origen, commit_destino)
     commits_rango = get_commits_in_range(repo, commit_origen, commit_destino)
 
-    # Analizar archivos por commit
+    # Analizar archivos por commit PRIMERO (para obtener todos los archivos)
     archivos_por_commit = {}
     for commit in commits_rango:
         archivos_por_commit[commit.hexsha] = analyze_commit_changes(repo, commit)
+
+    # Consolidar todos los archivos de todos los commits
+    todos_creados: set[str] = set()
+    todos_modificados: set[str] = set()
+    todos_eliminados: set[str] = set()
+
+    for commit_files in archivos_por_commit.values():
+        for file_type, path in commit_files:
+            if file_type == "Creado":
+                todos_creados.add(path)
+            elif file_type == "Modificado":
+                todos_modificados.add(path)
+            elif file_type == "Eliminado":
+                todos_eliminados.add(path)
+
+    # Crear diccionario consolidado para el Markdown
+    archivos_por_estado = {
+        "creados": sorted(todos_creados),
+        "modificados": sorted(todos_modificados),
+        "eliminados": sorted(todos_eliminados),
+    }
 
     # Generar Markdown
     markdown = format_changelog(

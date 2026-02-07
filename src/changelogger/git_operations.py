@@ -76,23 +76,43 @@ def classify_files_by_status(
     modificados: set[str] = set()
     eliminados: set[str] = set()
 
-    for d in target.diff(origin):
-        # target.diff(origin) muestra cambios desde origin hacia target
-        # "A" significa que el archivo fue agregado en target (creado)
-        # "D" significa que el archivo fue eliminado en target (eliminado)
-        if d.change_type == "A":
-            if d.b_path:
-                creados.add(d.b_path)
-        elif d.change_type == "M":
-            if d.b_path:
-                modificados.add(d.b_path)
-        elif d.change_type == "D":
-            if d.a_path:
-                eliminados.add(d.a_path)
-        else:
-            path = d.b_path or d.a_path
-            if path:
-                modificados.add(path)
+    # Si origin y target son el mismo commit, mostrar los cambios de ese commit
+    if origin.hexsha == target.hexsha:
+        # Obtener los archivos cambiados en este commit específico
+        for d in origin.diff(origin.parents[0] if origin.parents else None):
+            if d.change_type == "A":
+                if d.b_path:
+                    creados.add(d.b_path)
+            elif d.change_type == "M":
+                if d.b_path:
+                    modificados.add(d.b_path)
+            elif d.change_type == "D":
+                if d.a_path:
+                    eliminados.add(d.a_path)
+            else:
+                path = d.b_path or d.a_path
+                if path:
+                    modificados.add(path)
+    else:
+        # Usar origin.diff(target) para mostrar cambios desde origin hacia target
+        # "A" = archivos agregados en target (CREADOS)
+        # "D" = archivos eliminados en target (ELIMINADOS)
+        diffs = list(origin.diff(target))
+        
+        for d in diffs:
+            if d.change_type == "A":
+                if d.b_path:
+                    creados.add(d.b_path)
+            elif d.change_type == "M":
+                if d.b_path:
+                    modificados.add(d.b_path)
+            elif d.change_type == "D":
+                if d.a_path:
+                    eliminados.add(d.a_path)
+            else:
+                path = d.b_path or d.a_path
+                if path:
+                    modificados.add(path)
 
     return {
         "creados": sorted(creados),
