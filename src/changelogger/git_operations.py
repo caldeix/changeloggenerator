@@ -77,6 +77,9 @@ def classify_files_by_status(
     eliminados: set[str] = set()
 
     for d in target.diff(origin):
+        # target.diff(origin) muestra cambios desde origin hacia target
+        # "A" significa que el archivo fue agregado en target (creado)
+        # "D" significa que el archivo fue eliminado en target (eliminado)
         if d.change_type == "A":
             if d.b_path:
                 creados.add(d.b_path)
