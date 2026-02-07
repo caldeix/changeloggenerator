@@ -36,7 +36,7 @@ def format_commit_section(commit, files: List[Tuple[str, str]]) -> List[str]:
     return lines
 
 
-def format_ai_section(ai_analysis: str) -> str:
+def format_ai_section(ai_analysis: str) -> List[str]:
     """Formatea la sección de análisis de IA en el Markdown."""
     lines: List[str] = []
     lines.append("## 🤖 Información (Análisis con IA)")
@@ -45,7 +45,7 @@ def format_ai_section(ai_analysis: str) -> str:
     lines.append("")
     lines.append("---")
     lines.append("")
-    return "\n".join(lines)
+    return lines
 
 
 def format_changelog(

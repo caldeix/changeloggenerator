@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import textwrap
 from typing import Dict, List
 
 try:
@@ -103,21 +104,9 @@ Responde en español, de forma técnica pero clara. Máximo 300 palabras.
         
         result = response.choices[0].message.content.strip()
         print(f"✅ DEBUG: Análisis recibido de OpenAI ({len(result)} caracteres)")
+        print(f"🔍 DEBUG: Primeros 100 caracteres del resultado: {repr(result[:100])}")
         return result
         
     except Exception as e:
         print(f"❌ ERROR: Excepción al analizar con ChatGPT: {str(e)}")
         return f"❌ Error al analizar con ChatGPT: {str(e)}"
-
-
-def format_ai_section(ai_analysis: str) -> str:
-    """Formatea la sección de análisis de IA en el Markdown."""
-    lines = [
-        "## 🤖 Información (Análisis con IA)",
-        "",
-        ai_analysis,
-        "",
-        "---",
-        ""
-    ]
-    return "\n".join(lines)
