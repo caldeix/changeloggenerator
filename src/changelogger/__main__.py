@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from .ai_analyzer import analyze_changes_with_gpt
 from .file_operations import (
     create_output_files,
     ensure_output_structure,
@@ -49,6 +50,8 @@ def main() -> None:
         print("Operación cancelada.")
         raise SystemExit(0)
 
+    print("🤖 Analizando cambios con IA...")
+    
     # Preparar estructura de salida
     base_repo = get_repository_working_path(repo)
     diff_dir, md_dir = ensure_output_structure(base_repo)
@@ -83,13 +86,27 @@ def main() -> None:
         "eliminados": sorted(todos_eliminados),
     }
 
-    # Generar Markdown
+    # Preparar resumen de commits para análisis de IA
+    commits_summary = "\n".join([
+        f"- {c.hexsha[:7]} | {c.summary}" 
+        for c in commits_rango
+    ])
+
+    # Analizar cambios con ChatGPT
+    ai_analysis = analyze_changes_with_gpt(
+        diff_texto, 
+        commits_summary, 
+        archivos_por_estado
+    )
+
+    # Generar Markdown con análisis de IA
     markdown = format_changelog(
         commit_origen,
         commit_destino,
         archivos_por_estado,
         commits_rango,
         archivos_por_commit,
+        ai_analysis=ai_analysis,
     )
 
     # Crear archivos de salida

@@ -1,14 +1,16 @@
 [project]
 name = "changelogger"
-version = "2.0.0"
-description = "Herramienta CLI para generar diffs y resúmenes de commits en Markdown"
+version = "3.0.0"
+description = "herramienta CLI para generar diffs y resúmenes de commits en Markdown con análisis de IA"
 authors = [
   { name = "caldeix" }
 ]
 requires-python = ">=3.9"
 dependencies = [
   "GitPython>=3.1.0",
-  "prompt_toolkit>=3.0.0"
+  "prompt_toolkit>=3.0.0",
+  "openai>=1.0.0",
+  "python-dotenv>=0.19.0"
 ]
 
 [project.scripts]

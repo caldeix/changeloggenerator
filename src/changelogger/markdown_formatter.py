@@ -36,12 +36,25 @@ def format_commit_section(commit, files: List[Tuple[str, str]]) -> List[str]:
     return lines
 
 
+def format_ai_section(ai_analysis: str) -> str:
+    """Formatea la sección de análisis de IA en el Markdown."""
+    lines: List[str] = []
+    lines.append("## 🤖 Información (Análisis con IA)")
+    lines.append("")
+    lines.append(ai_analysis)
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def format_changelog(
     origin_commit,
     target_commit,
     files_by_status: Dict[str, List[str]],
     commits_in_range: List,
     files_by_commit: Dict[str, List[Tuple[str, str]]],
+    ai_analysis: str = None,
 ) -> str:
     """Genera el contenido Markdown estructurado en español."""
     fecha_destino = format_timestamp(target_commit.committed_date)
@@ -72,6 +85,11 @@ def format_changelog(
         commit_files = files_by_commit.get(commit.hexsha, [])
         commit_lines = format_commit_section(commit, commit_files)
         out.extend(commit_lines)
+    
+    # Sección de análisis con IA (si está disponible)
+    if ai_analysis:
+        ai_lines = format_ai_section(ai_analysis)
+        out.extend(ai_lines)
     
     return "\n".join(out).rstrip() + "\n"
 

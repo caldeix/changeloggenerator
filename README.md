@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-v2.0.0-yellow.svg) ![python](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey.svg) ![author](https://img.shields.io/badge/author-caldeix-blue.svg)
+![version](https://img.shields.io/badge/version-v3.0.0-yellow.svg) ![python](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey.svg) ![author](https://img.shields.io/badge/author-caldeix-blue.svg)
 
 # changelogger
 
@@ -9,7 +9,7 @@ Herramienta CLI para generar:
 
 Autor: `caldeix`
 
-Última actualización: `2026-02-06`
+Última actualización: `2026-02-07`
 
 ## Requisitos
 
@@ -29,6 +29,33 @@ Notas (Windows / Python de Microsoft Store):
 
 - `pip` puede instalar en modo usuario y mostrar un aviso de que el directorio `Scripts` no está en `PATH`.
 - Si luego **no existe** el comando `changelogger`, revisa la sección **Troubleshooting**.
+
+### Configuración de OpenAI (opcional)
+```bash
+# Copiar archivo de ejemplo
+cp .env.example .env
+
+# Editar con tu API key
+nano .env
+```
+
+Añade tu API key de OpenAI al archivo `.env`:
+```bash
+OPENAI_API_KEY=sk-your-api-key-here
+OPENAI_MODEL=gpt-4
+OPENAI_MAX_TOKENS=4000
+```
+
+## 🤖 Integración con ChatGPT
+
+Cuando se configura una API key de OpenAI, Changelogger añade automáticamente:
+
+1. **Análisis ejecutivo** de los cambios principales
+2. **Impacto funcional** detectado
+3. **Riesgos potenciales** identificados
+4. **Recomendaciones** para testing/despliegue
+
+El análisis se incluye en la sección **"🤖 Información"** del Markdown generado.
 
 ## Verificación de instalación
 
